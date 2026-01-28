@@ -36,11 +36,11 @@ GitHub에서 바로 보기 좋게: HTML + Markdown 혼합 템플릿
 <!-- 스크린샷 넣기(레포에 images 폴더 만든 후 경로 맞추면 가장 안정적) -->
 <div align="center">
   <img
-    src="./images/screenshot_main.png"
+    src="https://github.com/user-attachments/assets/55499d59-2176-4791-ae21-c814f3c6dadc"
     alt="MemoApp 메인 화면"
     width="980"
   />
-  <br/>
+  <br />
   <sub>좌측: 검색/필터/메모 리스트 · 우측: 메모 편집/저장/내보내기/삭제</sub>
 </div>
 

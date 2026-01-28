@@ -1,1 +1,0 @@
-# MemoApp.exe

@@ -1,0 +1,1 @@
+C:\Users\Administrator\Desktop\test\MemoApp\bin\Release\net10.0-windows\win-x64\publish\MemoApp.exe

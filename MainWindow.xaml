@@ -1,0 +1,375 @@
+<Window x:Class="MemoApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoApp"
+        mc:Ignorable="d"
+        Title="메모 프로그램" Height="750" Width="1300"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing"
+        KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 왼쪽 사이드바 -->
+        <Border Grid.Column="0" Background="#2c3e50">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- 검색 영역 -->
+                <Border Grid.Row="0" Background="#34495e" Padding="10" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="🔍 검색" Foreground="White" FontWeight="Bold" Margin="0,0,0,5" FontSize="14"/>
+                        <TextBox x:Name="SearchTextBox" 
+                                 TextChanged="SearchTextBox_TextChanged"
+                                 Background="#ecf0f1" 
+                                 Padding="8"
+                                 FontSize="13"
+                                 BorderThickness="1"
+                                 BorderBrush="#bdc3c7"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 필터 영역 -->
+                <Border Grid.Row="1" Background="#34495e" Padding="10" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="📁 카테고리" Foreground="White" FontWeight="Bold" Margin="0,0,0,5" FontSize="14"/>
+                        <ComboBox x:Name="CategoryComboBox" 
+                                  SelectionChanged="CategoryComboBox_SelectionChanged"
+                                  Background="#ecf0f1"
+                                  Padding="5"
+                                  FontSize="13"
+                                  BorderThickness="1"
+                                  BorderBrush="#bdc3c7"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 우선순위 필터 -->
+                <Border Grid.Row="2" Background="#34495e" Padding="10" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="⚡ 우선순위" Foreground="White" FontWeight="Bold" Margin="0,0,0,5" FontSize="14"/>
+                        <ComboBox x:Name="PriorityComboBox" 
+                                  SelectionChanged="PriorityComboBox_SelectionChanged"
+                                  Background="#ecf0f1"
+                                  Padding="5"
+                                  FontSize="13"
+                                  BorderThickness="1"
+                                  BorderBrush="#bdc3c7"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 필터 버튼 -->
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="5" HorizontalAlignment="Center">
+                    <Button Content="⭐ 즐겨찾기" 
+                            x:Name="FavoriteFilterButton"
+                            Click="FavoriteFilterButton_Click"
+                            Background="#f39c12"
+                            Foreground="White"
+                            Padding="8,4"
+                            Margin="2"
+                            FontSize="11"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+                    <Button Content="📅 최신순" 
+                            x:Name="SortButton"
+                            Click="SortButton_Click"
+                            Background="#3498db"
+                            Foreground="White"
+                            Padding="8,4"
+                            Margin="2"
+                            FontSize="11"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+                </StackPanel>
+
+                <!-- 메모 목록 -->
+                <ListBox x:Name="MemoListBox" 
+                         Grid.Row="4"
+                         SelectionChanged="MemoListBox_SelectionChanged"
+                         Background="#34495e"
+                         BorderThickness="0"
+                         Margin="5"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#ecf0f1" Margin="2" Padding="10" CornerRadius="5" Cursor="Hand">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Title}" 
+                                                   FontWeight="Bold" 
+                                                   FontSize="14"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="#2c3e50"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Text="⭐" 
+                                                   FontSize="12"
+                                                   Foreground="#f39c12"
+                                                   Margin="5,0,0,0"
+                                                   VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="🔥" 
+                                                   FontSize="12"
+                                                   Foreground="#e74c3c"
+                                                   Margin="5,0,0,0"
+                                                   VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Priority}" Value="3">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Content}" 
+                                               FontSize="11"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="#7f8c8d"
+                                               Margin="0,5,0,0"
+                                               MaxHeight="35"
+                                               TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                        <Border Background="#d5e8f4"
+                                                BorderThickness="1"
+                                                BorderBrush="#3498db"
+                                                Padding="4,2"
+                                                Margin="0,0,8,0"
+                                                CornerRadius="3">
+                                            <TextBlock Text="{Binding Category}" 
+                                                       FontSize="10"
+                                                       Foreground="#3498db"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding ModifiedDate, StringFormat='{}{0:MM-dd HH:mm}'}" 
+                                                   FontSize="10"
+                                                   Foreground="#95a5a6"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- 새 메모 버튼 -->
+                <Button Grid.Row="5" 
+                        Content="➕ 새 메모" 
+                        x:Name="NewMemoButton"
+                        Click="NewMemoButton_Click"
+                        Background="#27ae60"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Padding="10"
+                        Margin="5"
+                        Height="50"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+            </Grid>
+        </Border>
+
+        <!-- 구분선 -->
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="#34495e"/>
+
+        <!-- 오른쪽 편집 영역 -->
+        <Border Grid.Column="2" Background="#ecf0f1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- 상단 툴바 -->
+                <Border Grid.Row="0" Background="#34495e" Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" 
+                                   x:Name="SaveLocationText"
+                                   Foreground="White"
+                                   FontSize="11"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="⚙️ 저장위치" 
+                                    x:Name="SettingsButton"
+                                    Click="SettingsButton_Click"
+                                    Background="#95a5a6"
+                                    Foreground="White"
+                                    Padding="10,6"
+                                    Margin="5"
+                                    FontSize="12"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                            <Button Content="💾 저장" 
+                                    x:Name="SaveButton"
+                                    Click="SaveButton_Click"
+                                    Background="#27ae60"
+                                    Foreground="White"
+                                    Padding="12,6"
+                                    Margin="5"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                            <Button Content="📤 내보내기" 
+                                    x:Name="ExportButton"
+                                    Click="ExportButton_Click"
+                                    Background="#9b59b6"
+                                    Foreground="White"
+                                    Padding="12,6"
+                                    Margin="5"
+                                    FontSize="14"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                            <Button Content="🗑️ 삭제" 
+                                    x:Name="DeleteButton"
+                                    Click="DeleteButton_Click"
+                                    Background="#e74c3c"
+                                    Foreground="White"
+                                    Padding="12,6"
+                                    Margin="5"
+                                    FontSize="14"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- 제목 입력 -->
+                <Border Grid.Row="1" Background="White" Padding="20" Margin="10,10,10,5" BorderThickness="1" BorderBrush="#bdc3c7">
+                    <TextBox x:Name="TitleTextBox" 
+                             FontSize="22"
+                             FontWeight="Bold"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             TextChanged="TitleTextBox_TextChanged"
+                             VerticalContentAlignment="Center"/>
+                </Border>
+
+                <!-- 메타 정보 -->
+                <Border Grid.Row="2" Background="White" Padding="15,8" Margin="10,0,10,5" BorderThickness="1" BorderBrush="#bdc3c7">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="카테고리:" 
+                                   FontSize="12"
+                                   Foreground="#7f8c8d"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   Margin="0,0,5,0"/>
+                        <ComboBox x:Name="CategoryEditComboBox" 
+                                  Grid.Column="1"
+                                  FontSize="12"
+                                  Margin="0,0,15,0"
+                                  SelectionChanged="CategoryEditComboBox_SelectionChanged"/>
+
+                        <TextBlock Text="태그:" 
+                                   FontSize="12"
+                                   Foreground="#7f8c8d"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="2"
+                                   Margin="0,0,5,0"/>
+                        <TextBox x:Name="TagsTextBox" 
+                                 Grid.Column="3"
+                                 FontSize="12"
+                                 Margin="0,0,15,0"
+                                 TextChanged="TagsTextBox_TextChanged"/>
+
+                        <TextBlock Text="우선순위:" 
+                                   FontSize="12"
+                                   Foreground="#7f8c8d"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="4"
+                                   Margin="0,0,5,0"/>
+                        <ComboBox x:Name="PriorityEditComboBox" 
+                                  Grid.Column="5"
+                                  FontSize="12"
+                                  SelectionChanged="PriorityEditComboBox_SelectionChanged"/>
+
+                        <CheckBox x:Name="FavoriteCheckBox" 
+                                  Content="⭐ 즐겨찾기"
+                                  FontSize="12"
+                                  Grid.Row="1"
+                                  Grid.Column="0"
+                                  Grid.ColumnSpan="2"
+                                  Margin="0,8,0,0"
+                                  VerticalAlignment="Center"
+                                  Checked="FavoriteCheckBox_Changed"
+                                  Unchecked="FavoriteCheckBox_Changed"/>
+
+                        <TextBlock x:Name="DateTextBlock" 
+                                   FontSize="11"
+                                   Foreground="#95a5a6"
+                                   Grid.Row="1"
+                                   Grid.Column="4"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,8,0,0"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                </Border>
+
+                <!-- 내용 입력 -->
+                <Border Grid.Row="3" Background="White" Margin="10,0,10,10" BorderThickness="1" BorderBrush="#bdc3c7">
+                    <TextBox x:Name="ContentTextBox" 
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             FontSize="15"
+                             BorderThickness="0"
+                             Padding="20"
+                             TextChanged="ContentTextBox_TextChanged"
+/>
+                </Border>
+
+                <!-- 하단 상태바 -->
+                <Border Grid.Row="4" Background="#34495e" Padding="10">
+                    <TextBlock x:Name="StatusTextBlock" 
+                               Text="준비됨"
+                               Foreground="White"
+                               FontSize="12"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
